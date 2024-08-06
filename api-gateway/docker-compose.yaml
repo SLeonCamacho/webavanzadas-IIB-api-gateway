@@ -17,8 +17,6 @@ services:
       - chat-service
 
   auth-service:
-    build:
-      context: ../auth-service
     image: auth-service
     environment:
       - DB_USER=postgres
@@ -33,8 +31,6 @@ services:
       - db_auth
 
   inventory-service:
-    build:
-      context: ../inventory-service
     image: inventory-service
     environment:
       - DB_USER=postgres
@@ -49,8 +45,6 @@ services:
       - db_inventory
 
   chat-service:
-    build:
-      context: ../chat-service
     image: chat-service
     environment:
       - PORT=3003
