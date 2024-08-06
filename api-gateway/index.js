@@ -1,8 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const expressWs = require('express-ws');
 
 const app = express();
+expressWs(app);
 
 const authServiceProxy = createProxyMiddleware({
   target: process.env.AUTH_SERVICE_URL,
@@ -18,6 +20,7 @@ const inventoryServiceProxy = createProxyMiddleware({
 
 const chatServiceProxy = createProxyMiddleware({
   target: process.env.CHAT_SERVICE_URL,
+  ws: true,  // Allow WebSocket connections
   changeOrigin: true,
   pathRewrite: { '^/chat': '' },
 });
