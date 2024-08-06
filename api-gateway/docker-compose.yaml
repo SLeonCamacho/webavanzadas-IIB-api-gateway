@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  api-gateway:
+    build:
+      context: .
+    image: api-gateway
+    environment:
+      - PORT=3000
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - INVENTORY_SERVICE_URL=http://inventory-service:3002
+      - CHAT_SERVICE_URL=http://chat-service:3003
+    ports:
+      - 3000:3000
+
+  auth-service:
+    image: auth-service
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db_auth
+      - DB_PORT=5432
+      - DB_NAME=authdb
+      - PORT=3001
+    ports:
+      - 13001:3001
+    depends_on:
+      - db_auth
+
+  inventory-service:
+    image: inventory-service
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db_inventory
+      - DB_PORT=5432
+      - DB_NAME=inventorydb
+      - PORT=3002
+    ports:
+      - 13002:3002
+    depends_on:
+      - db_inventory
+
+  chat-service:
+    image: chat-service
+    environment:
+      - PORT=3003
+    ports:
+      - 13003:3003
+
+  db_auth:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=authdb
+    ports:
+      - 15432:5432
+
+  db_inventory:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=inventorydb
+    ports:
+      - 15433:5432
+
+volumes:
+  db_auth_data:
+  db_inventory_data:
