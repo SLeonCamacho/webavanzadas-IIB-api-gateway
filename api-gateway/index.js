@@ -10,16 +10,26 @@ expressWs(app);
 app.use(cors());  // Habilita CORS para todas las rutas
 
 const authServiceProxy = createProxyMiddleware({
-  target: process.env.AUTH_SERVICE_URL,
-  changeOrigin: true,
-  pathRewrite: { '^/auth': '' },
-});
-
-const inventoryServiceProxy = createProxyMiddleware({
-  target: process.env.INVENTORY_SERVICE_URL,
-  changeOrigin: true,
-  pathRewrite: { '^/inventory': '' },
-});
+    target: process.env.AUTH_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: { '^/auth': '' },
+    onProxyReq: (proxyReq, req, res) => {
+      if (req.headers.authorization) {
+        proxyReq.setHeader('Authorization', req.headers.authorization);
+      }
+    },
+  });
+  
+  const inventoryServiceProxy = createProxyMiddleware({
+    target: process.env.INVENTORY_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: { '^/inventory': '' },
+    onProxyReq: (proxyReq, req, res) => {
+      if (req.headers.authorization) {
+        proxyReq.setHeader('Authorization', req.headers.authorization);
+      }
+    },
+  });
 
 const chatServiceProxy = createProxyMiddleware({
   target: process.env.CHAT_SERVICE_URL,
